@@ -1,6 +1,6 @@
-<h1>Adding User</h1>
+<h1>Revoking user</h1>
 
-<%= form_tag(projects_process_req_path,method: 'post') do %>
+<%= form_tag(projects_revoke_req_path,method: 'post') do %>
 Enter User's email: <%= text_field_tag :useremail %>
 <%= hidden_field_tag :projectid %>
 <%= hidden_field_tag :projectid, value = params[:format] %>

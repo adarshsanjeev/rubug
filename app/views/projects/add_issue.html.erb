@@ -1,0 +1,12 @@
+<h1>Adding Issue</h1>
+
+<%= form_tag(projects_process_add_issue_path,method: 'post') do %>
+Issue Title:<br \><%= text_field_tag :title %><br /><br />
+Issue Details:<br /><%= text_field_tag :content %><br /><br />
+Issue Tags:<br /><%= text_field_tag :tags %><br /><br />
+<%= hidden_field_tag :projectid %>
+<%= hidden_field_tag :projectid, value = params[:format] %>
+<%= submit_tag "Submit" %>
+<% end %>
+
+

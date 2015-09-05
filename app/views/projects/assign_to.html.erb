@@ -1,0 +1,9 @@
+<h1>Assigning User</h1>
+
+<%= form_tag(projects_assign_to_process_path,method: 'post') do %>
+Enter User's email: <%= text_field_tag :useremail %>
+<%= hidden_field_tag :issueid %>
+<%= hidden_field_tag :issueid, value = params[:format] %>
+<%= submit_tag "Submit" %>
+<% end %>
+

@@ -10,6 +10,103 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.json
   def show
+    if Project.find(params[:id]).is_public == false
+      if !user_signed_in?
+        authenticate_user!
+      end
+      if !(Project.find(params[:id]).user_id == current_user.id || (Permission.find_by user_id: current_user.id, projects_id: params[:id]))
+        respond_to do |format|
+          if @project.update(project_params)
+            format.html { redirect_to @project, notice: 'You don\' have permission to view this page' }
+            format.json { render :show, status: :ok, location: @project }
+          else
+            format.html { render :edit }
+            format.json { render json: @project.errors, status: :unprocessable_entity }
+          end
+        end
+      end
+    end
+    @permission_list = []
+    @comments_list = []
+    Permission.find_each do |record|
+      if record.projects_id == params[:id].to_i
+        @permission_list += [User.find(record.user_id).email]
+      end
+    end
+    @issue_list = []
+    Issue.find_each do |record|
+      if record.projects_id == params[:id].to_i
+        @issue_list += [record]
+        Comment.find_each do |comm|
+          if comm.issue_id == record.id
+            @comments_list += [comm]
+          end
+      end
+    end
+    end
+  end
+
+  def close_issue
+    if !user_signed_in?
+      authenticate_user!
+    end
+    Issue.find(params[:format]).destroy
+    redirect_to :back
+  end
+  
+  def add_comment
+    if !user_signed_in?
+      authenticate_user!
+    end
+  end
+  
+  def process_comment
+    if !user_signed_in?
+      authenticate_user!
+    end
+    object = Comment.new
+    object.user_id = current_user.id
+    object.issue_id = params[:issueid]
+    object.message = params[:message]
+    object.save
+    redirect_to :back
+  end
+
+  def add_issue
+    if !user_signed_in?
+      authenticate_user!
+    end
+  end
+
+  def assign_to
+    if !user_signed_in?
+      authenticate_user!
+    end
+
+  end
+
+  def assign_to_process
+    if !user_signed_in?
+      authenticate_user!
+    end
+    object = Issue.find(params[:issueid])
+    object.assigned_to = User.find_by_email(params[:useremail]).id
+    object.save
+    redirect_to :back
+  end
+  
+  def process_add_issue
+    if !user_signed_in?
+      authenticate_user!
+    end
+    object = Issue.new
+    object.user_id = current_user.id
+    object.projects_id = params[:projectid]
+    object.title = params[:title]
+    object.content = params[:content]
+    object.tags = params[:tags]
+    object.save
+    redirect_to :back
   end
 
   # GET /projects/new
@@ -18,17 +115,36 @@ class ProjectsController < ApplicationController
   end
 
   def add_user
-    
+    if !user_signed_in?
+      authenticate_user!
+    end
+  end
+
+  def revoke_user
+    if !user_signed_in?
+      authenticate_user!
+    end
   end
 
   def process_req
+    if !user_signed_in?
+      authenticate_user!
+    end
     object = Permission.new
-    object.user = User.find_by_email(params[:useremail])
-    object.projects = Project.find(params[:projectid])
-    object.save!
+    object.user_id = User.find_by_email(params[:useremail]).id
+    object.projects_id = params[:projectid]
+    object.save
     redirect_to :back
   end
-  
+
+  def revoke_req
+    if !user_signed_in?
+      authenticate_user!
+    end    
+    User.find_by_email(params[:useremail]).destroy
+    redirect_to :back
+  end
+
   # GET /projects/1/edit
   def edit
   end

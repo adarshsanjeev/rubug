@@ -1,0 +1,9 @@
+<h1>Adding Comment</h1>
+
+<%= form_tag(projects_process_comment_path,method: 'post') do %>
+Enter Comment: <%= text_field_tag :message %>
+<%= hidden_field_tag :issueid %>
+<%= hidden_field_tag :issueid, value = params[:format] %>
+<%= submit_tag "Submit" %>
+<% end %>
+

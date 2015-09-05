@@ -4,6 +4,19 @@ Rails.application.routes.draw do
   get 'projects/add_user', to: 'projects#add_user'
   post 'projects/process_req', to: 'projects#process_req'
 
+  get 'projects/revoke_user', to: 'projects#revoke_user'
+  post 'projects/revoke_req', to: 'projects#revoke_req'
+
+  get 'projects/add_issue', to: 'projects#add_issue'
+  post 'projects/process_add_issue', to: 'projects#process_add_issue'
+
+  get 'projects/close_issue', to: 'projects#close_issue'
+  get 'projects/assign_to', to: 'projects#assign_to'
+  post 'projects/assign_to_process', to: 'projects#assign_to_process'
+
+  get 'projects/add_comment', to: 'projects#add_comment'
+  post 'projects/process_comment', to: 'projects#process_comment'
+
   resources :projects
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
